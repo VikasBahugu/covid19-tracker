@@ -1,0 +1,354 @@
+{% load humanize %}
+<!doctype html>
+<html lang="en" xmlns:forloop.counter>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="E:\covids.ico"/>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <title>Covid tracker -@vikas</title>
+</head>
+<style>
+    #more {display: none;}
+                div.scroll {
+                margin:4px, 4px;
+                padding:4px;
+                border:1px dotted grey;
+                height: 510px;
+                overflow-x: hidden;
+                overflow-y: auto;
+                text-align:justify;
+            }
+
+     @media (min-width: 400px) {
+        .country_death{
+        font-size:27px;
+        }
+     }
+
+     @media (min-width: 800px) {
+        .covid_number{
+        font-size:32px;
+        }
+     }
+
+     @media (min-width:995px){
+        .covid_number{
+        font-size:200%;
+        }
+     }
+          @media (max-width:750px){
+        .covid_number{
+        font-size:200%;
+        }
+     }
+
+
+
+
+
+
+
+</style>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand p-2" href="#" style="border-radius:12px; font-weight:bold; background-color:lightgreen">Covid19
+        tracker</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" style="font-size:24px" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link">Contact at <strong>vikasedu10@gmail.com</strong> for any information <span
+                        class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="#" tabindex="-1"></a>
+            </li>
+        </ul>
+        <!--        <form class="form-inline my-2 my-lg-0">-->
+        <!--            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">-->
+        <!--            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>-->
+        <!--        </form>-->
+    </div>
+</nav>
+<script>
+window.onload = function () {
+
+<!--DEATHS CIRCLE CHART-->
+<!--DEATHS CIRCLE CHART-->
+<!--DEATHS CIRCLE CHART-->
+var options = {
+	title: {
+		text: "Covid-19 across globe"
+	},
+	subtitles: [{
+		text: "as of {{timenow}}"
+	}],
+
+	animationEnabled: true,
+	data: [{
+		type: "pie",
+		startAngle: 40,
+		toolTipContent: "<b>{label}</b>: {y}%",
+		showInLegend: "true",
+		legendText: "{label}",
+		indexLabelFontSize: 16,
+		indexLabel: "{label} - {y}%",
+		dataPoints: [
+			{ y: {{activep}}, label: "Active-{{active}}" },
+			{ y: {{deathsp}}, label: "Deaths-{{deaths}}" },
+			{ y: {{recoveredp}}, label: "Recovered-{{recovered}}" },
+		]
+	}]
+};
+$("#chart_for_deaths_percentage").CanvasJSChart(options);
+
+
+<!--MOST AFFECTED CHART-->
+<!--MOST AFFECTED CHART-->
+<!--MOST AFFECTED CHART-->
+
+//Better to construct options first and then pass it as a parameter
+var options = {
+	animationEnabled: true,
+	zoomEnabled: true,
+	colorSet: "colorSet2",
+	title:{
+		text: "Worldwide deaths ( diffrent dots denoting diffrent countries)"
+	},
+	axisX: {
+		title:"Number denoting countries (1 to 70)",
+		crosshair: {
+			enabled: true,
+			snapToDataPoint: true
+		}
+	},
+	axisY:{
+		title: "No of deaths",
+		gridThickness: 0,
+		crosshair: {
+			enabled: true,
+			snapToDataPoint: true
+		}
+	},
+	data: [{
+		type: "scatter",
+		toolTipContent: "Country:{{forloop.counter}}<br><b>Deaths: </b>{y}",
+		dataPoints: [
+		{% for cal in covid_data|slice:":70" %}
+			{ x: {{forloop.counter}}, y: {{cal.deaths}}},
+        {% endfor %}
+		]
+	}]
+};
+
+$("#char_for_most_affected").CanvasJSChart(options);
+
+
+}
+
+
+
+
+
+</script>
+
+
+<div class="container">
+
+    <div id="chart_for_deaths_percentage" style="margin-top:120px; height: 370px; width: 100%;"></div>
+
+    <div style="margin-top:-20px">
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        Total cases
+                    </div>
+                    <blockquote class="blockquote mb-0">
+
+                        <div class="covid_number alert alert-warning" style="text-align:center" role="alert">
+                            {{covid_data.7.confirmed|intcomma}}
+                        </div>
+                        <footer class="blockquote-footer"><cite title="Source Title">{{confirmedp}} % of 759.43 cr
+                            people infected</cite>
+                        </footer>
+                    </blockquote>
+                </div>
+            </div>
+            <div class="form-group col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        Total recoveries
+                    </div>
+                    <blockquote class="blockquote mb-0">
+
+                        <div class="covid_number alert alert-success" style="text-align:center" role="alert">
+                            {{covid_data.7.recovered|intcomma}}
+                        </div>
+                        <footer class="blockquote-footer"><cite title="Source Title">{{recoveredp}} % infected are
+                            recovered</cite>
+                        </footer>
+                    </blockquote>
+                </div>
+            </div>
+            <div class="form-group col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        Total deaths
+                    </div>
+                    <blockquote class="blockquote mb-0">
+
+                        <div class="covid_number alert alert-danger" style="text-align:center" role="alert">
+                            {{covid_data.7.deaths|intcomma}}
+                        </div>
+                        <footer class="blockquote-footer"><cite title="Source Title">{{deathsp}} % infected people
+                            died</cite>
+                        </footer>
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="continer">
+
+    </div>
+
+    <div class="form-row" style="margin-top:90px;">
+        <div class="col-md-5" style="  border-bottom:3px dotted grey">
+            <li class="list-group-item d-flex justify-content-between align-items-center"
+                style="font-size:25px; background-color:skyblue; margin-top:20px">
+                Country
+                <span class="badge badge-primary badge-pill" style="margin-right:-20px">Total Deaths</span>
+            </li>
+            <div class="scroll country_death" style="border-radius:4px">
+                <ul class="list-group" style="font-size:90%; margin-left:-16px; margin-right:-20px">
+                    {% for case in covid_data %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center"
+                        style="
+                        {% ifequal forloop.counter|divisibleby:'2' True %}
+                            background-color:#D5D5D5;
+                        {% endifequal %}>
+                        ">
+
+                        {{case.country}}
+                        <span class="badge badge-primary badge-pill">{{case.deaths|intcomma}}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="col-md-7" style=" border-bottom:3px dotted grey">
+
+
+            <li class="list-group-item d-flex justify-content-between align-items-center"
+                style="font-size:25px; background-color:skyblue; margin-top:20px">
+                Country wise details
+                <span class="badge badge-primary badge-pill" style="margin-right:-20px">Total Deaths</span>
+            </li>
+            <div class="scroll country_death" style="border-radius:4px">
+                <ul class="list-group" style="font-size:90%; margin-left:-16px; margin-right:-20px">
+
+                    {% for case in covid_data %}
+
+                    <li class="list-group-item d-flex justify-content-between align-items-center"
+                        style="
+                    {% ifequal forloop.counter|divisibleby:'2' True %}
+                            background-color:#F5D9D9;
+                        {% endifequal %}
+                        ">
+
+                        <a data-toggle="collapse" href="#country_wise_detail-{{forloop.counter}}"
+                           role="button" style="text-decoration:none"
+                           aria-expanded="false" aria-controls="collapseExample">
+                            {{case.country}}
+                        </a>
+                        <i class="fa fa-angle-double-down" aria-hidden="true"></i>
+                    </li>
+                    <div class="collapse" id="country_wise_detail-{{forloop.counter}}">
+                        <div class="card card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item list-group-item-secondary">Confirmed - {{case.confirmed}}
+                                </li>
+                                <li class="list-group-item list-group-item-warning">Active - {{case.active}}</li>
+                                <li class="list-group-item list-group-item-danger">Deaths - {{case.deaths}}</li>
+                                <li class="list-group-item list-group-item-success">Recovered - {{case.recovered}}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+
+
+    <div id="char_for_most_affected" style="height: 370px; width: 100%; margin-top:70px"></div>
+        <div style="width:100%; height:20px; background-color:white; margin-top:-11px; z-index: 99 !important; "></div>
+
+    </div>
+</div>
+<hr>
+
+<!-- Footer -->
+<footer class="page-footer font-small blue p-4" style="margin-top:120px; min-height:250px; background-color:lightgrey">
+
+    <!-- Footer Elements -->
+    <div class="container">
+
+        <!-- Social buttons -->
+        <ul class="list-unstyled list-inline text-center">
+            <li class="list-inline-item">
+                <a href="https://www.linkedin.com/in/vikas-bahuguna-0253b4195" class="btn-floating btn-li mx-1">
+                    <i class="fa fa-linkedin" style="font-size:74px"> </i>
+                </a>
+            </li>
+        </ul>
+        <!-- Social buttons -->
+
+
+    </div>
+    <!-- Footer Elements -->
+
+    <!-- Copyright -->
+    <div class="footer-copyright text-center py-3">© 2020 Copyright:
+        <strong>covid19-tracker</strong><a href=""> vikasedu10@gmail.com</a>
+    </div>
+    <!-- Copyright -->
+
+</footer>
+<!-- Footer -->
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+
+<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+<script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
+</body>
+</html>
